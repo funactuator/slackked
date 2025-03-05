@@ -25,9 +25,13 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
 
   const handleProviderLogin = (provider: "github" | "google") => {
-    signIn(provider);
+    setPending(true)
+    signIn(provider).finally(() => {
+      setPending(false);
+    })
   };
 
   return (
@@ -42,7 +46,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       <CardContent className="space-y-5 px-0 pb-0">
         <form className="space-y-2.5">
           <Input
-            disabled={false}
+            disabled={pending}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
@@ -50,14 +54,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             type="email"
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
             type="password"
           />
-          <Button type="submit" size="lg" disabled={false} className="w-full">
+          <Button type="submit" size="lg" disabled={pending} className="w-full">
             Continue
           </Button>
         </form>
@@ -66,7 +70,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
 
         <div className="flex flex-col gap-2.5">
           <Button
-            disabled={false}
+            disabled={pending}
             onClick={() => handleProviderLogin("google")}
             variant="outline"
             size="lg"
@@ -76,7 +80,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             Continue with Google
           </Button>
           <Button
-            disabled={false}
+            disabled={pending}
             onClick={() => handleProviderLogin("github")}
             variant="outline"
             size="lg"
