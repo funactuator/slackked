@@ -2,6 +2,7 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { AlertTriangle } from "lucide-react";
 
 import { SignInFlow } from "../types";
 
@@ -26,12 +27,25 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleProviderLogin = (provider: "github" | "google") => {
-    setPending(true)
+  const onProviderLogin = (provider: "github" | "google") => {
+    setPending(true);
     signIn(provider).finally(() => {
       setPending(false);
-    })
+    });
+  };
+
+  const onPasswordLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+    signIn("password", { email, password, flow: "signIn" })
+      .catch(() => {
+        setError("Invalid email or password!");
+      })
+      .finally(() => {
+        setPending(false);
+      });
   };
 
   return (
@@ -43,8 +57,14 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         </CardDescription>
       </CardHeader>
 
+      {!!error && (
+        <p className="flex rounded-sm gap-x-2 items-center text-lg px-4 py-2 bg-rose-300 text-sky-300">
+          <AlertTriangle /> <span>{error}</span>
+        </p>
+      )}
+
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form onSubmit={(e) => onPasswordLogin(e)} className="space-y-2.5">
           <Input
             disabled={pending}
             value={email}
@@ -71,7 +91,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <div className="flex flex-col gap-2.5">
           <Button
             disabled={pending}
-            onClick={() => handleProviderLogin("google")}
+            onClick={() => onProviderLogin("google")}
             variant="outline"
             size="lg"
             className="w-full relative"
@@ -81,7 +101,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
           </Button>
           <Button
             disabled={pending}
-            onClick={() => handleProviderLogin("github")}
+            onClick={() => onProviderLogin("github")}
             variant="outline"
             size="lg"
             className="w-full relative"
