@@ -62,9 +62,9 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       </CardHeader>
 
       {!!error && (
-        <p className="flex rounded-sm gap-x-2 items-center text-lg px-4 py-2 bg-rose-300 text-sky-300">
-          <AlertTriangle /> <span>{error}</span>
-        </p>
+        <div className="flex rounded-md gap-x-2 items-center text-sm px-4 py-2 bg-destructive/15 text-rose-500/80">
+          <AlertTriangle className="size-4" /> <p>{error}</p>
+        </div>
       )}
 
       <CardContent className="space-y-5 px-0 pb-0">
