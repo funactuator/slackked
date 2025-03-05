@@ -58,7 +58,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       </CardHeader>
 
       {!!error && (
-        <div className="flex rounded-md gap-x-2 items-center text-sm px-4 py-2 bg-destructive/15 text-rose-500/80">
+        <div className="flex rounded-sm gap-x-2 items-center text-sm px-4 py-2 bg-destructive/15 text-destructive ">
           <AlertTriangle className="size-4" /> <p>{error}</p>
         </div>
       )}
