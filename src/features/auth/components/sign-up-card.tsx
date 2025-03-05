@@ -12,6 +12,8 @@ import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { SignInFlow } from "../types";
 import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { AlertTriangle } from "lucide-react";
 
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
@@ -21,6 +23,35 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { signIn } = useAuthActions();
+
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+
+  const onProviderSignUp = (provider: "github" | "google") => {
+    setPending(true);
+    signIn(provider).finally(() => {
+      setPending(false);
+    });
+  };
+
+  const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+    if (password === confirmPassword) {
+      signIn("password", { email, password, flow: "signUp" })
+        .catch(() => {
+          setError("Something Went Wrong");
+        })
+        .finally(() => {
+          setPending(false);
+        });
+    } else {
+      setError("Passwords do not match!");
+      setPending(false);
+    }
+  };
+
   return (
     <Card className="w-full h-full p-8">
       <CardHeader className="px-0 pt-0">
@@ -30,10 +61,16 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         </CardDescription>
       </CardHeader>
 
+      {!!error && (
+        <p className="flex rounded-sm gap-x-2 items-center text-lg px-4 py-2 bg-rose-300 text-sky-300">
+          <AlertTriangle /> <span>{error}</span>
+        </p>
+      )}
+
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form onSubmit={(e) => onPasswordSignUp(e)} className="space-y-2.5">
           <Input
-            disabled={false}
+            disabled={pending}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
@@ -41,7 +78,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             type="email"
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
@@ -49,14 +86,14 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             type="password"
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm Password"
             required
             type="password"
           />
-          <Button type="submit" size="lg" disabled={false} className="w-full">
+          <Button type="submit" size="lg" disabled={pending} className="w-full">
             Continue
           </Button>
         </form>
@@ -65,8 +102,8 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
         <div className="flex flex-col gap-2.5">
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => onProviderSignUp("google")}
             variant="outline"
             size="lg"
             className="w-full relative"
@@ -75,8 +112,8 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             Continue with Google
           </Button>
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => onProviderSignUp("google")}
             variant="outline"
             size="lg"
             className="w-full relative"
