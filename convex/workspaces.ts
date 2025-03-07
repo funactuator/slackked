@@ -2,6 +2,13 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+const generateJoinCode = () => {
+  const code = Array.from({length: 6},
+    () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
+  ).join("");
+  return code;
+}
+
 /**
  * Get All workspaces which the logged in user is part of
  */
@@ -49,7 +56,7 @@ export const create = mutation({
     }
 
     // TODO Create a proper Method Later
-    const joinCode = "123456";
+    const joinCode = generateJoinCode();
     const workspaceId = await ctx.db.insert("workspaces", {
       name: args.name,
       joinCode,
