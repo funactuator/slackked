@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useCurrentUser } from "../api/use-current-user";
+import { useRouter } from "next/navigation";
 
 export const UserButton = () => {
+  const router = useRouter();
   const { signOut } = useAuthActions();
   const { data, isLoading } = useCurrentUser();
 
@@ -27,16 +29,24 @@ export const UserButton = () => {
   const { name, image } = data;
 
   const avatarFallBack = name!.charAt(0).toUpperCase();
+
+  const onSignOut = () => {
+    signOut().then(() => {
+      router.push("/auth");
+    });
+  };
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="outline-none relative">
         <Avatar className="size-10 hover:opacity-75 transition">
           <AvatarImage alt={name} src={image} />
-          <AvatarFallback className="bg-sky-500 text-white">{avatarFallBack}</AvatarFallback>
+          <AvatarFallback className="bg-sky-500 text-white">
+            {avatarFallBack}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-60" side="right">
-        <DropdownMenuItem onClick={() => signOut()} className="h-10">
+        <DropdownMenuItem onClick={onSignOut} className="h-10">
           <LogOut className="size-4 mr-2" /> Log Out
         </DropdownMenuItem>
       </DropdownMenuContent>
