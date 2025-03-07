@@ -7,20 +7,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "../../../../../convex/_generated/dataModel";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ListFilter, SquarePen } from "lucide-react";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
+  isAdmin: boolean;
 }
 
-export const WorkspaceHeader = ({ workspace }: WorkspaceHeaderProps) => {
+export const WorkspaceHeader = ({
+  workspace,
+  isAdmin,
+}: WorkspaceHeaderProps) => {
   return (
-    <div className="flex items-center justify-between px-1 h-[49px] gap-0.5">
+    <div className="flex items-center justify-between px-4 h-[49px] gap-0.5">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="transparent"
-            className="font-semibold text-lg w-auto p-1.5 outline-hidden"
+            className="font-semibold text-lg w-auto  p-1.5 overflow-hidden"
             size="sm"
           >
             <span className="truncate">{workspace.name}</span>
@@ -37,16 +41,34 @@ export const WorkspaceHeader = ({ workspace }: WorkspaceHeaderProps) => {
               <p className="text-xs text-muted-foreground ">Active Workspace</p>
             </div>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer py-2" onClick={() => {}}>
-            Invite people to {workspace.name}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer py-2" onClick={() => {}}>
-            Preferences
-          </DropdownMenuItem>
+          {isAdmin && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer py-2"
+                onClick={() => {}}
+              >
+                Invite people to {workspace.name}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer py-2"
+                onClick={() => {}}
+              >
+                Preferences
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="flex  items-center gap-0.5">
+        <Button variant="transparent" size="iconSm">
+          <SquarePen className="size-4" />
+        </Button>
+        <Button variant="transparent" size="iconSm">
+          <ListFilter className="size-4" />
+        </Button>
+      </div>
     </div>
   );
 };
