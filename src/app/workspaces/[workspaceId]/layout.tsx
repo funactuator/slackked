@@ -1,4 +1,10 @@
 "use client";
+
+import {
+  ResizablePanelGroup,
+  ResizableHandle,
+  ResizablePanel,
+} from "@/components/ui/resizable";
 import { Sidebar } from "./components/sidebar";
 import { Toolbar } from "./components/toolbar";
 
@@ -11,9 +17,15 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
     <div className="h-full">
       <Toolbar />
       <div className="flex h-[calc(100vh-40px)]">
-        <Sidebar/>
-        {children}
-        </div>
+        <Sidebar />
+        <ResizablePanelGroup direction="horizontal" autoSaveId="ca-workspace-layout">
+          <ResizablePanel defaultSize={20} minSize={11} className="bg-[#5E2C5F]">
+            <div>Channel Sidebar</div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel minSize={20}>{children}</ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   );
 };
