@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     if (isLoading) return;
     else if (!!workspaceId) {
-      router.replace(`/workspace/${workspaceId}`)
+      router.replace(`/workspaces/${workspaceId}`)
     } else if (!open) {
       console.log("Open Workspace Creation Modal");
       setOpen(true);
