@@ -10,7 +10,7 @@ import {
 interface HintProps {
   label: string;
   children: React.ReactNode;
-  side?: "top" | "right" | "left" | "top";
+  side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
 }
 
