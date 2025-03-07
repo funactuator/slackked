@@ -8,7 +8,7 @@ import {
 
 import { Sidebar } from "./components/sidebar";
 import { Toolbar } from "./components/toolbar";
-import { WorkspaceSidebar } from "./components/WorkspaceSidebar";
+import { WorkspaceSidebar } from "./components/workspace-sidebar";
 
 interface WorkspaceIdLayoutProps {
   children: React.ReactNode;
@@ -29,7 +29,7 @@ const WorkspaceIdLayout = ({ children }: WorkspaceIdLayoutProps) => {
             minSize={11}
             className="bg-[#5E2C5F]"
           >
-            <div>
+            <div className="h-full">
               <WorkspaceSidebar />
             </div>
           </ResizablePanel>
