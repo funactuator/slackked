@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface PreferencesModalProps {
   open: boolean;
@@ -28,8 +29,11 @@ export const PreferencesModal = ({
   setOpen,
   initialValue,
 }: PreferencesModalProps) => {
+  const router = useRouter();
+
   const [value, setValue] = useState(initialValue);
   const [editOpen, setEditOpen] = useState(false);
+
   const workspaceId = useWorkspaceId();
   const { mutate: updateWorkspace, isPending: isUpdatingWorkspace } =
     useUpdateWorkspace();
@@ -53,18 +57,22 @@ export const PreferencesModal = ({
   };
 
   const handleDelete = () => {
-    deleteWorkspace({
-      id: workspaceId
-    }, {
-      onSuccess: () => {
-        toast.success("Workspace deleted");
-        setEditOpen(false);
+    deleteWorkspace(
+      {
+        id: workspaceId,
       },
-      onError: () => {
-        toast.error("Failed to delete workspace");
-      },
-    })
-  }
+      {
+        onSuccess: () => {
+          toast.success("Workspace deleted");
+          router.replace("/");
+          setEditOpen(false);
+        },
+        onError: () => {
+          toast.error("Failed to delete workspace");
+        },
+      }
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
