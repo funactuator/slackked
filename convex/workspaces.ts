@@ -3,11 +3,12 @@ import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 const generateJoinCode = () => {
-  const code = Array.from({length: 6},
+  const code = Array.from(
+    { length: 6 },
     () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
   ).join("");
   return code;
-}
+};
 
 /**
  * Get All workspaces which the logged in user is part of
@@ -97,5 +98,29 @@ export const getById = query({
 
     const workspace = await ctx.db.get(member.workspaceId);
     return workspace;
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("workspaces"),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+    if (!member || member.role !== "admin") throw new Error("Unauthorized");
+    return await ctx.db.patch(args.id, {
+      name: args.name,
+    });
   },
 });
