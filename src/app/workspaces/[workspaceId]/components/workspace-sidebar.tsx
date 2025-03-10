@@ -45,7 +45,7 @@ export const WorkspaceSidebar = () => {
         isAdmin={member.role === "admin"}
       />
       <div className="flex flex-col px-3 mt-3">
-        <SidebarItem label="Threads" icon={MessageSquareText} id="threads" variant="default" />
+        <SidebarItem label="Threads" icon={MessageSquareText} id="threads"/>
         <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="drafts" />
       </div>
     </div>
