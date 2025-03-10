@@ -46,7 +46,7 @@ export const WorkspaceSidebar = () => {
       />
       <div className="flex flex-col px-3 mt-3">
         <SidebarItem label="Threads" icon={MessageSquareText} id="threads" variant="default" />
-        <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="drafts" variant="default" />
+        <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="drafts" />
       </div>
     </div>
   );
