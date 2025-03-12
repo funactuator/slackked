@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogHeader,
-    DialogDescription,
     DialogContent,
     DialogTitle,
   } from "@/components/ui/dialog";
@@ -10,10 +9,16 @@ import { Input } from "@/components/ui/input";
  
   import { useCreateChannelModal } from "@/features/members/store/use-create-channel-modal";
 import { useState } from "react";
+import { useCreateChannel } from "../api/use-create-channel";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
   export const CreateChannelModal = () => {
 
+    const workspaceId = useWorkspaceId();
+
     const [open, setOpen] = useCreateChannelModal();
+    const {mutate, isPending} = useCreateChannel()
+
     const [name, setName] = useState("");
 
     const handleClose = () => {
@@ -25,6 +30,16 @@ import { useState } from "react";
         const val = e.target.value.replace(/\s+/g, '-').toLocaleLowerCase();
         setName(val);
     }
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        mutate({name, workspaceId}, {
+            onSuccess: (id) => {
+                // todo redirect chanel
+                handleClose();
+            }
+        })
+    }
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent>
@@ -33,10 +48,10 @@ import { useState } from "react";
                         Add a Channel
                     </DialogTitle>
                 </DialogHeader>
-                <form className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <Input
                         value={name}
-                        disabled={false}
+                        disabled={isPending}
                         onChange={handleChange}
                         required
                         autoFocus

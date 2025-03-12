@@ -52,11 +52,11 @@ export const create = mutation({
       q.eq("workspaceId", args.workspaceId).eq("userId", userId)
     )
     .unique();
-    if (!member || member.role === 'admin') return [];
+    if (!member || member.role !== 'admin') throw new Error("Unauthorized");
 
     const parsedName = args.name.replace(/\s+/g, '-').toLocaleLowerCase();
 
-    const channelId = ctx.db.insert("channels", {name: parsedName, workspaceId: args.workspaceId});
+    const channelId = await ctx.db.insert("channels", {name: parsedName, workspaceId: args.workspaceId});
     return channelId;
   }
 })
