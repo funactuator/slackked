@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  HashIcon,
   Loader,
   MessageSquareText,
   SendHorizonal,
@@ -11,6 +12,7 @@ import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
 import { WorkspaceHeader } from "./workspace-header";
 import { SidebarItem } from "./sidebar-item";
+import { useGetChannels } from "@/features/channels/api/use-get-channels";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
@@ -19,6 +21,9 @@ export const WorkspaceSidebar = () => {
   });
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
+  });
+  const { data: channels, isLoading: channelsLoading } = useGetChannels({
+    workspaceId,
   });
 
   if (workspaceLoading || memberLoading) {
@@ -45,8 +50,16 @@ export const WorkspaceSidebar = () => {
         isAdmin={member.role === "admin"}
       />
       <div className="flex flex-col px-3 mt-3">
-        <SidebarItem label="Threads" icon={MessageSquareText} id="threads"/>
+        <SidebarItem label="Threads" icon={MessageSquareText} id="threads" />
         <SidebarItem label="Drafts & Sent" icon={SendHorizonal} id="drafts" />
+        {channels?.map((item) => (
+          <SidebarItem
+            icon={HashIcon}
+            id={item._id}
+            label={item.name}
+            key={item._id}
+          />
+        ))}
       </div>
     </div>
   );
