@@ -10,7 +10,7 @@ import {
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
 
-export const UseConfirm = (
+export const useConfirm = (
   title: string,
   message: string
 ): [() => JSX.Element, () => Promise<unknown>] => {

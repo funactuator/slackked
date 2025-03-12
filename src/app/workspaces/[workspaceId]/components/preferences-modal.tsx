@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { UseConfirm } from "@/hooks/use-confirm";
+import { useConfirm } from "@/hooks/use-confirm";
 
 interface PreferencesModalProps {
   open: boolean;
@@ -34,7 +34,7 @@ export const PreferencesModal = ({
 
   const [value, setValue] = useState(initialValue);
   const [editOpen, setEditOpen] = useState(false);
-  const [DeleteConfirmationDialog, confirmDelete] = UseConfirm(
+  const [DeleteConfirmationDialog, confirmDelete] = useConfirm(
     "Are you sure?",
     "This action is irreversible!"
   );

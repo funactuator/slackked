@@ -14,7 +14,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useUpdateWorkspace = () => {
+export const useCreateNewJoinCode = () => {
   const [data, setData] = useState<ResponseType>(null);
   const [error, setError] = useState<Error | null>(null);
 
