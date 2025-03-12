@@ -28,12 +28,12 @@ export const WorkspaceHeader = ({
   return (
     <>
       <PreferencesModal open={preferencesOpen} setOpen={setPreferencesOpen} initialValue={workspace.name}/>
-      <div className="flex items-center justify-between px-4 h-[49px] gap-0.5">
+      <div className="flex items-center justify-between px-2 h-[49px] gap-0.5">
         <DropdownMenu >
           <DropdownMenuTrigger asChild>
             <Button
               variant="transparent"
-              className="font-semibold text-lg p-1.5 overflow-hidden flex-1"
+              className="font-semibold justify-start text-lg p-1.5 overflow-hidden flex-1"
               size="sm"
             >
               <span className="truncate">{workspace.name}</span>
