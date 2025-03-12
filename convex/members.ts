@@ -52,7 +52,6 @@ export const get = query({
       )
       .collect();
 
-    const isLoading = data === undefined;
 
     const members = [];
     for(const member of data){
@@ -63,6 +62,6 @@ export const get = query({
         })
       }
     }
-    return { members, isLoading };
+    return members;
   },
 });
