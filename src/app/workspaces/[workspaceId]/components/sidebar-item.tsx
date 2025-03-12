@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { cn } from "@/lib/utils";
 
-const SidebarItemVariants = cva(
+const sidebarItemVariants = cva(
   "flex justify-start items-center gap-1.5 font-normal h-7 px-[18px] text-sm overflow-hidden",
   {
     variants: {
@@ -26,7 +26,7 @@ interface SidebarItemProps {
   label: string;
   icon: LucideIcon | IconType;
   id: string;
-  variant?: VariantProps<typeof SidebarItemVariants>["variant"];
+  variant?: VariantProps<typeof sidebarItemVariants>["variant"];
 }
 
 export const SidebarItem = ({
@@ -38,7 +38,7 @@ export const SidebarItem = ({
   const workspaceId = useWorkspaceId();
   return (
     <Button
-      className={cn(SidebarItemVariants({ variant }))}
+      className={cn(sidebarItemVariants({ variant }))}
       variant="transparent"
       size="sm"
       asChild

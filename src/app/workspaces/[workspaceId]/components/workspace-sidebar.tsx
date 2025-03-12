@@ -6,7 +6,7 @@ import {
   SendHorizonal,
 } from "lucide-react";
 
-import { useCurrentMember } from "@/features/members/api/useCurrentMember";
+import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
@@ -14,6 +14,8 @@ import { WorkspaceHeader } from "./workspace-header";
 import { SidebarItem } from "./sidebar-item";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { WorkspaceSection } from "./workspace-section";
+import { useGetMembers } from "@/features/members/api/use-get-members";
+import { UserItem } from "./user-item";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
@@ -24,6 +26,10 @@ export const WorkspaceSidebar = () => {
     id: workspaceId,
   });
   const { data: channels, isLoading: channelsLoading } = useGetChannels({
+    workspaceId,
+  });
+
+  const { data: members, isLoading: membersLoading } = useGetMembers({
     workspaceId,
   });
 
@@ -63,7 +69,21 @@ export const WorkspaceSidebar = () => {
             key={item._id}
           />
         ))}
-        </WorkspaceSection>
+      </WorkspaceSection>
+      <WorkspaceSection
+        label="Direct Messages"
+        hint="New Direct Message"
+        onNew={() => {}}
+      >
+        {members?.map((item) => (
+          <UserItem
+            key={item._id}
+            label={item.name}
+            id={item._id}
+            image={item.image}
+          />
+        ))}
+      </WorkspaceSection>
     </div>
   );
 };
