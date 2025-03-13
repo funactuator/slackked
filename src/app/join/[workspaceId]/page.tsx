@@ -28,10 +28,10 @@ const JoinPage = () => {
         router.replace(`/workspaces/${workspaceId}`);
       }
     },
-    { isMember, router, workspaceId }
+    [isMember, router, workspaceId]
   );
 
-  const handleComplete = (value) => {
+  const handleComplete = (value: string) => {
     mutate(
       { workspaceId, joinCode: value },
       {
