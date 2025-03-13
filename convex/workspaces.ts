@@ -81,6 +81,49 @@ export const create = mutation({
   },
 });
 
+/**
+ * This api lets a registered user join a given workspace as member
+ */
+export const join = mutation({
+  args: {
+    workspaceId: v.id("workspaces"),
+    joinCode: v.string(),
+  },
+  handler: async (ctx, args) => {
+    //check authentication
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new Error("Unauthorized");
+
+    //check if valid workspace
+    const workspace = await ctx.db.get(args.workspaceId);
+    if (!workspace) throw new Error("Workspace not found");
+
+    // check if the user is already a member of given workspace
+    const existingMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
+      )
+      .unique();
+    if (existingMember) {
+      throw new Error("Already member of this workspace");
+    }
+
+    //check if codes match
+    if (workspace.joinCode !== args.joinCode.toLocaleLowerCase()) {
+      throw new Error("Invalid join code");
+    }
+
+    await ctx.db.insert("members", {
+      userId,
+      workspaceId: args.workspaceId,
+      role: "member",
+    });
+
+    return workspace._id;
+  },
+});
+
 export const createNewJoinCode = mutation({
   args: {
     workspaceId: v.id("workspaces"),
@@ -102,12 +145,12 @@ export const createNewJoinCode = mutation({
     if (!member || member.role !== "admin") throw new Error("Unauthorized");
 
     const joinCode = generateJoinCode();
-    
+
     await ctx.db.patch(args.workspaceId, {
       joinCode: joinCode,
     });
 
-   return args.workspaceId;
+    return args.workspaceId;
   },
 });
 
