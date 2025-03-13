@@ -28,7 +28,7 @@ export const WorkspaceSection = ({
       <div className="flex items-center px-1 group">
         <Button
           variant="transparent"
-          className="p-0.5 text-sm text-[#f9edffcc] shrink-0 size-6"
+          className="p-0.5 text-sm text-[#f9edffcc] shrink-0 size-5"
           onClick={toggle}
         >
           <FaCaretDown className={cn("size-4 transition-transform", !on && '-rotate-90')} />
@@ -46,7 +46,7 @@ export const WorkspaceSection = ({
               onClick={onNew}
               variant="transparent"
               size="iconSm"
-              className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto text-sm p-0.5 text-[#f9edffcc] size-6 shrink-0"
+              className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto text-sm p-0.5 text-[#f9edffcc] size-5 shrink-0"
             >
               <PlusIcon className="size-5" />
             </Button>
