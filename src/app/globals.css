@@ -130,32 +130,3 @@ html, body, :root {
 }
 
 
-.verification-container {
-  display: flex;
-  gap: 8px; /* Similar to Tailwind's gap-x-2 */
-}
-
-.verification-character {
-  text-transform: uppercase;
-  height: auto;
-  border-radius: 4px;
-  border: 1px solid #d1d5db; /* Tailwind: border-gray-300 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  outline: none;
-  font-size: 1.125rem; /* Tailwind: text-lg */
-  font-weight: 500; /* Tailwind: font-medium */
-  color: #6b7280; /* Tailwind: text-gray-500 */
-}
-
-.verification-character-inactive {
-  background-color: #f3f4f6; /* Tailwind: bg-muted */
-}
-
-.verification-character-selected,
-.verification-character-filled {
-  background-color: white;
-  color: black;
-}
-
