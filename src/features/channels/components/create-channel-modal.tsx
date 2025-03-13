@@ -1,73 +1,73 @@
-import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogHeader,
-    DialogContent,
-    DialogTitle,
-  } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
- 
-  import { useCreateChannelModal } from "@/features/members/store/use-create-channel-modal";
 import { useState } from "react";
-import { useCreateChannel } from "../api/use-create-channel";
+import { useRouter } from "next/navigation";
+
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
-  export const CreateChannelModal = () => {
+import { useCreateChannelModal } from "@/features/members/store/use-create-channel-modal";
+import { useCreateChannel } from "../api/use-create-channel";
 
-    const workspaceId = useWorkspaceId();
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogHeader,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
-    const [open, setOpen] = useCreateChannelModal();
-    const {mutate, isPending} = useCreateChannel()
+export const CreateChannelModal = () => {
+    const router = useRouter();
+  const workspaceId = useWorkspaceId();
 
-    const [name, setName] = useState("");
+  const [open, setOpen] = useCreateChannelModal();
+  const { mutate, isPending } = useCreateChannel();
 
-    const handleClose = () => {
-        setName("");
-        setOpen(false);
-    }
+  const [name, setName] = useState("");
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value.replace(/\s+/g, '-').toLocaleLowerCase();
-        setName(val);
-    }
+  const handleClose = () => {
+    setName("");
+    setOpen(false);
+  };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        mutate({name, workspaceId}, {
-            onSuccess: (id) => {
-                // todo redirect chanel
-                handleClose();
-            }
-        })
-    }
-    return (
-        <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>
-                        Add a Channel
-                    </DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <Input
-                        value={name}
-                        disabled={isPending}
-                        onChange={handleChange}
-                        required
-                        autoFocus
-                        minLength={3}
-                        maxLength={80}
-                        placeholder="e.g. plan-budget"
-                    />
-                    <div className="flex justify-end">
-                        <Button
-                            disabled={false}
-                        >
-                            Create
-                        </Button>
-                    </div>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\s+/g, "-").toLocaleLowerCase();
+    setName(val);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(
+      { name, workspaceId },
+      {
+        onSuccess: (id) => {
+          router.push(`/workspaces/${workspaceId}/channels/${id}`)
+          handleClose();
+        },
+      }
+    );
+  };
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add a Channel</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            value={name}
+            disabled={isPending}
+            onChange={handleChange}
+            required
+            autoFocus
+            minLength={3}
+            maxLength={80}
+            placeholder="e.g. plan-budget"
+          />
+          <div className="flex justify-end">
+            <Button disabled={false}>Create</Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
