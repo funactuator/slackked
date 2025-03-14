@@ -135,6 +135,8 @@ export const remove = mutation({
       .unique();
     if (!member || member.role !== "admin") throw new Error("Unauthorized");
 
+    // Todo: remove associated messages
+
     await ctx.db.delete(args.id);
 
     return args.id;
