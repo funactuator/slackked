@@ -3,6 +3,7 @@ import { TrashIcon } from "lucide-react";
 import { FaChevronDown } from "react-icons/fa";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogTrigger,
@@ -12,7 +13,6 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 
 interface HeaderProps {
   title: string;
