@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useLayoutEffect, useRef } from "react";
+import { RefObject, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Quill, { Delta, Op, type QuillOptions } from "quill";
 import { PiTextAa } from "react-icons/pi";
 import { MdSend } from "react-icons/md";
@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { Hint } from "./hint";
 
 import "quill/dist/quill.snow.css";
+import { cn } from "@/lib/utils";
 
 type EditorValue = {
   image: File | null;
@@ -33,6 +34,8 @@ const Editor = ({
   disabled = false,
   innerRef,
 }: EditorProps) => {
+  const [text, setText] = useState("");
+
   // Why this approach? using ref (something to do with useEffect and re renders)
   const submitRef = useRef(onSubmit);
   const placeholderRef = useRef(placeholder);
@@ -59,18 +62,60 @@ const Editor = ({
     const options: QuillOptions = {
       theme: "snow",
       placeholder: placeholderRef.current,
+      modules: {
+        keyboard: {
+          bindings: {
+            enter: {
+              key: 'Enter',
+              handler: () => {
+                // Todo submit form
+                return;
+              }
+            },
+            // shift_enter: {
+            //   key: 'Enter',
+            //   shiftKey: true,
+            //   handler: () => {
+            //     quill.insertText(quill.getSelection()?.index || 0 , '\n');
+            //   }
+            // }
+          }
+        }
+      }
     };
 
-    new Quill(editorContainer, options);
+    const quill = new Quill(editorContainer, options);
+    quillRef.current = quill;
+    quillRef.current.focus();
+
+    if (innerRef) {
+      innerRef.current = quill;
+    }
+
+    quill.setContents(defaultValueRef.current);
+    setText(quill.getText());
+    quill.on(Quill.events.TEXT_CHANGE, () => {
+      setText(quill.getText());
+    });
     return () => {
+      quill.off(Quill.events.TEXT_CHANGE);
       if (container) {
         container.innerHTML = "";
       }
+      if (quillRef.current) {
+        quillRef.current = null;
+      }
+      if (innerRef) {
+        innerRef.current = null;
+      }
     };
-  }, []);
+  }, [innerRef]);
+
+  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:bg-slate-300 focus-within:shadow-sm transition bg-white">
+      <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:bg-slate-300 focus-within:shadow-sm transition !bg-white">
         <div className="h-full ql-custom" ref={containerRef} />
         <div className="flex px-2 pb-2 z-[5]">
           <Hint label="Hide formatting">
@@ -105,6 +150,16 @@ const Editor = ({
               </Button>
             </Hint>
           )}
+          {variant === "create" && (
+            <Button
+              disabled={isEmpty}
+              onClick={() => {}}
+              size="iconSm"
+              className={cn("ml-auto", !isEmpty ? "bg-[#007a5a] hover:bg-[#007a5a]/80 text-white hover:text-white" : "bg-white hover:bg-white text-muted-foreground hover:text-white")}
+            >
+              <MdSend className="size-4" />
+            </Button>
+          )}
           {variant === "update" && (
             <div className="ml-auto flex items-center gap-x-2">
               <Button
@@ -125,16 +180,6 @@ const Editor = ({
                 Save
               </Button>
             </div>
-          )}
-          {variant === "create" && (
-            <Button
-              disabled={false}
-              onClick={() => {}}
-              size="iconSm"
-              className="ml-auto bg-[#007a5a] hover:bg-[#007a5a]/80 text-white hover:text-white"
-            >
-              <MdSend className="size-4" />
-            </Button>
           )}
         </div>
       </div>
