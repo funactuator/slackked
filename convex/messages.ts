@@ -3,7 +3,7 @@ import { mutation, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
-const getMemmber = async (
+const getMember = async (
   ctx: QueryCtx,
   workspaceId: Id<"workspaces">,
   userId: Id<"users">
@@ -32,23 +32,23 @@ export const create = mutation({
       throw new Error("Unauthorized");
     }
 
-    const member = await getMemmber(ctx, args.workspaceId, userId);
+    const member = await getMember(ctx, args.workspaceId, userId);
 
-    if(!member){
-        throw new Error("Unauthorized")
+    if (!member) {
+      throw new Error("Unauthorized");
     }
 
     // Handle conversation Id
 
     const messageId = await ctx.db.insert("messages", {
-        memberId: member._id,
-        channelId: args.channelId,
-        workspaceId: args.workspaceId,
-        parentMessagedId: args.parentMessageId,
-        body: args.body,
-        image: args.image,
-        updatedAt: Date.now()
-    })
+      memberId: member._id,
+      channelId: args.channelId,
+      workspaceId: args.workspaceId,
+      parentMessagedId: args.parentMessageId,
+      body: args.body,
+      image: args.image,
+      updatedAt: Date.now(),
+    });
 
     return messageId;
   },
