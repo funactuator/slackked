@@ -25,6 +25,7 @@ interface EditorProps {
   disabled?: boolean;
   innerRef?: RefObject<Quill | null>;
   defaultValue?: Delta | Op[];
+  editorKey: NumberConstructor
 }
 
 const Editor = ({
@@ -35,6 +36,7 @@ const Editor = ({
   defaultValue = [],
   disabled = false,
   innerRef,
+  editorKey
 }: EditorProps) => {
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
