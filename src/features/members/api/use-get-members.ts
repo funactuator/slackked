@@ -10,7 +10,5 @@ export const useGetMembers = ({ workspaceId }: UseGetMembersProps) => {
   const data = useQuery(api.members.get, { workspaceId });
   const isLoading = data === undefined;
 
-  console.log(data);
-
   return { data, isLoading };
 };
