@@ -6,6 +6,7 @@ import { useChannelId } from "@/hooks/use-channel-id";
 import { useGetChannel } from "@/features/channels/api/use-get-channel";
 import { Header } from "./components/header";
 import { ChatInput } from "./components/chat-input";
+import { useGetMessages } from "@/features/messages/api/use-get-messages";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
@@ -14,6 +15,8 @@ const ChannelIdPage = () => {
     id: channelId,
   });
 
+  const {results} = useGetMessages({channelId});
+  console.log(results);
   if (channelLoading) {
     return (
       <div className="h-full flex flex-1 items-center justify-center">
@@ -33,7 +36,9 @@ const ChannelIdPage = () => {
 
   return <div className="flex flex-col h-full">
     <Header title = {channel.name} />
-    <div className="flex-1"/>
+    <div className="flex-1">
+      {JSON.stringify(results)};
+    </div>
     <ChatInput placeholder={`Message #${channel.name}`}/>
   </div>;
 };

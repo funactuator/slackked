@@ -1,7 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { mutation, query, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import { paginationOptsValidator } from "convex/server";
 
 const populateThread = async (ctx: QueryCtx, messageId: Id<"messages">) => {
@@ -104,7 +104,72 @@ export const get = query({
       .order("desc")
       .paginate(args.paginationOpts);
 
-    return results;
+    return {
+      ...results,
+      page: (await Promise.all(
+        results.page.map(async (message) => {
+          const member = await populateMember(ctx, message.memberId);
+          const user = member ? await populateUser(ctx, member.userId) : null;
+
+          if (!member || !user) {
+            return null;
+          }
+
+          const reactions = await populateReactions(ctx, message._id);
+          const thread = await populateThread(ctx, message._id);
+          const image = message.image
+            ? await ctx.storage.getUrl(message.image)
+            : undefined;
+
+          const reactionWithCounts = reactions.map((reaction) => {
+            return {
+              ...reaction,
+              count: reactions.filter((r) => r.value === reaction.value),
+            };
+          });
+
+          const dedupedReactions = reactionWithCounts.reduce(
+            (acc, reaction) => {
+              const existingReaction = acc.find(
+                (r) => r.value === reaction.value
+              );
+              if (existingReaction) {
+                existingReaction.memberIds = Array.from(
+                  new Set([...existingReaction.memberIds, reaction.memberId])
+                );
+                existingReaction.count = existingReaction.memberIds.length;
+              } else {
+                acc.push({
+                  ...reaction,
+                  memberIds: [reaction.memberId],
+                  count: 1,
+                });
+              }
+              return acc;
+            },
+            [] as (Doc<"reactions"> & {
+              count: number;
+              memberIds: Id<"members">[];
+            })[]
+          );
+
+          const reactionsWithoutMemberIdProperty = dedupedReactions.map(
+            ({memberId, ...rest}) => rest,
+          )
+
+          return {
+            ...message,
+            image, 
+            member,
+            user,
+            reactions: reactionsWithoutMemberIdProperty,
+            threadCount: thread.count,
+            threadImage: thread.image,
+            threadTimestamp: thread.timestamp
+          }
+        })
+      )).filter((message) => message !== null)
+    };
   },
 });
 
@@ -151,7 +216,6 @@ export const create = mutation({
       conversationId: _conversation_id,
       body: args.body,
       image: args.image,
-      updatedAt: Date.now(),
     });
 
     return messageId;
