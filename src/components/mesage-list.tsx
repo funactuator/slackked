@@ -61,7 +61,7 @@ export const MessageList = ({
           {messages.map((message, index) => {
             const prevMessage = messages[index-1];
             const isCompact = prevMessage && prevMessage.user._id === message.user._id && 
-            differenceInMinutes(message._creationTime, prevMessage._creationTime) < 5;
+            differenceInMinutes(message._creationTime, prevMessage._creationTime) < TIME_THRESHOLD;
             return (
               <Message
                 key={message._id}
